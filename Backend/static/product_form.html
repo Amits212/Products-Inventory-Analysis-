@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 2.5em;
+            color: #333;
+        }
+        form {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            width: 90%;
+            max-width: 600px;
+        }
+        form input, form textarea, form button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 10px 20px 10px;
+            font-size: 1em;
+        }
+        form button {
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+        }
+        .product {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .product h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin: 0 0 10px;
+        }
+        .product p {
+            color: #666;
+            font-size: 1em;
+            margin: 5px 0;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+        }
+        #product-details {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            width: 90%;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #product-details img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        #product-details h2 {
+            font-size: 2em;
+            color: #333;
+            margin: 0 0 10px;
+        }
+        #product-details p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        #back-to-list-link {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #333;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px 20px;
+            transition: background 0.2s;
+        }
+        #back-to-list-link:hover {
+            background: #f4f4f4;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Add Product</h1>
+<a id="back-to-list-link" href="/">Back to Product Inventory</a>
+<form id="product-form">
+    <input type="text" id="name" name="name" placeholder="Product Name" required>
+    <textarea id="description" name="description" placeholder="Product Description" rows="4" required></textarea>
+    <input type="number" id="quantity" name="quantity" placeholder="Quantity" required>
+    <button type="submit">Add Product</button>
+</form>
+
+<script>
+        async function createProduct(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', document.getElementById('name').value);
+    formData.append('description', document.getElementById('description').value);
+    formData.append('quantity', document.getElementById('quantity').value);
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/products/', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            window.location.href = '/';
+        } else {
+            const errorText = await response.text();
+            alert(`Failed to create product: ${errorText}`);
+        }
+    } catch (error) {
+        alert(`Failed to create product: ${error.message}`);
+    }
+}
+
+        document.getElementById('product-form').addEventListener('submit', createProduct);
+
+</script>
+</body>
+</html>

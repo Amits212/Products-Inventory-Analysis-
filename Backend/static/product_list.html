@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        /* Resetting default margins and paddings */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #b8c6db, #f5f7fa);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #333;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+
+        .product {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .product h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .product p {
+            color: #666;
+            font-size: 1.1em;
+            margin: 8px 0;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #add-product-link {
+            margin-top: 30px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #333;
+            background: #fff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 12px 24px;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        #add-product-link:hover {
+            background: #f4f4f4;
+            border-color: #999;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Products Inventory</h1>
+    <a id="add-product-link" href="/product_form">Add New Product</a>
+    <div id="product-list"></div>
+
+    <script>
+        async function fetchProducts() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/products/');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                const products = await response.json();
+
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '';
+
+                products.forEach(product => {
+                    const productLink = document.createElement('a');
+                    productLink.href = `/product_details?name=${encodeURIComponent(product.name)}`;
+                    productLink.className = 'product';
+
+                    productLink.innerHTML = `
+                        <h2>${product.name}</h2>
+                        <p><strong>Quantity:</strong> ${product.quantity}</p>
+                    `;
+
+                    productList.appendChild(productLink);
+                });
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+
+        window.onload = fetchProducts;
+    </script>
+</body>
+</html>
